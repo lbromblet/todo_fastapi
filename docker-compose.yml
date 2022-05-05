@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+
+  tododb:
+    image: postgres:13
+    container_name: ${MAIN_DATABASE_HOST}
+    environment:
+      POSTGRES_USER: ${MAIN_DATABASE_USER}
+      POSTGRES_PASSWORD: ${MAIN_DATABASE_PASSWORD}
+      POSTGRES_DB: ${MAIN_DATABASE_NAME}
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: on-failure
+
+  web:
+    image: todo_api
+    container_name: todo_api
+    build: .
+    volumes:
+      - ./app:/code/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - tododb
